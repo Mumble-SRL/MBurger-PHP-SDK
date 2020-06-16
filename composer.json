@@ -1,16 +1,39 @@
 {
-  "name": "mumble/mburger",
-  "type": "library",
-  "description": "PHP SDK for simplifying your MBurger projects development",
-  "keywords": [
-    "mburger",
-    "headless",
-    "cms",
-    "content delivery"
-  ],
-  "homepage": "https://mburger.cloud",
-  "license": "GPL",
-  "require": {
-    "php": "^7.2"
-  }
+    "name": "mumble/mburger",
+    "type": "library",
+    "description": "PHP SDK for simplifying your MBurger projects development",
+    "keywords": [
+        "mburger",
+        "headless",
+        "cms",
+        "content delivery"
+    ],
+    "homepage": "https://mburger.cloud",
+    "license": "GPL",
+    "require": {
+        "php": "^7.2"
+    },
+    "authors": [
+        {
+            "name": "Giacomo Torricelli",
+            "email": "giacomo.torricelli@mumbleideas.it"
+        },
+        {
+            "name": "Gianluca Puglia",
+            "email": "gianluca.puglia@mumbleideas.it"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Mumble\\MBurger\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mumble\\MBurger\\MBurgerServiceProvider"
+            ]
+        }
+    },
+,
 }

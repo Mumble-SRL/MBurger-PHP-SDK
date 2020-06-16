@@ -1,1 +1,3 @@
-# MBurger-PHP-SDK
+# MBurger PHP SDK
+
+## Version 1.0

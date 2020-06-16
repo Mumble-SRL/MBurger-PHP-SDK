@@ -1,0 +1,16 @@
+{
+  "name": "mumble/mburger",
+  "type": "library",
+  "description": "PHP SDK for simplifying your MBurger projects development",
+  "keywords": [
+    "mburger",
+    "headless",
+    "cms",
+    "content delivery"
+  ],
+  "homepage": "https://mburger.cloud",
+  "license": "GPL",
+  "require": {
+    "php": "^7.2"
+  }
+}

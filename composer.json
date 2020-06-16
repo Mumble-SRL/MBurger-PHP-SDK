@@ -9,7 +9,7 @@
         "content delivery"
     ],
     "homepage": "https://mburger.cloud",
-    "license": "GPL",
+    "license": "MIT",
     "require": {
         "php": "^7.2"
     },

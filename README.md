@@ -1,6 +1,6 @@
 # 🍔 MBurger PHP SDK 🍔 
 
-This package provide a simple interface from your Laravel Project to MBurger CMS, helping you retrieving data easily.
+This package provides a simple interface between your Laravel Project and the MBurger CMS, helping you to retrieve data easily.
 
 ## 1.0 - Installation
 

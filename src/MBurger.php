@@ -34,7 +34,7 @@ class MBurger
         return $response;
     }
 
-    public static function getBlocks(array $block_ids, $original_media = false, $params = [], $filters = [], $orderAsc = 1, $cache_seconds = 0)
+    public static function getBlocks(array $block_ids, $original_media = false, $params = [], $filters = [], $order_asc = 1, $cache_seconds = 0)
     {
         $url = 'https://mburger.cloud/api/blocks';
         $query = [
@@ -44,7 +44,7 @@ class MBurger
             'force_locale_fallback' => true,
             'sort' => 'order'
         ];
-        if (!$orderAsc) {
+        if (!$order_asc) {
             $query['sort'] = '-order';
         }
         $query = http_build_query($query);
@@ -77,7 +77,7 @@ class MBurger
         });
     }
 
-    public static function getBlock($block_id, $original_media = 0, $params = [], $filters = [], $orderAsc = 1, $cache_seconds = 0)
+    public static function getBlock($block_id, $original_media = 0, $params = [], $filters = [], $order_asc = 1, $cache_seconds = 0)
     {
         $url = 'https://mburger.cloud/api/blocks/' . $block_id . '/sections';
         $query = [
@@ -92,7 +92,7 @@ class MBurger
         if ($original_media) {
             $query['original_media'] = true;
         }
-        if (!$orderAsc) {
+        if (!$order_asc) {
             $query['sort'] = '-order';
         }
         $query = http_build_query($query);
@@ -125,7 +125,7 @@ class MBurger
 
     }
 
-    public static function getSection($secton_id, $original_media = 0, $params = [], $filters = [], $orderAsc = 1, $cache_seconds = 0, $use_slug = 0)
+    public static function getSection($secton_id, $original_media = 0, $params = [], $filters = [], $order_asc = 1, $cache_seconds = 0, $use_slug = 0)
     {
         $url = 'https://mburger.cloud/api/sections/' . $secton_id . '/elements';
 

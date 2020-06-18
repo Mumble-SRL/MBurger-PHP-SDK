@@ -26,9 +26,49 @@ Place your API KEY in your `.env` file like that
 
 If you don't have an API KEY yet, please generate one under your project settings page.
 
-## 3.0 - Reference 
+## 3.0 - Methods reference 
 
-> Work in progress
+In the current version of our PHP SDK you can find only a few methods that you can implement in your code but they're so powerful that enable you to do pretty anything with MBurger CMS.
+
+### 3.1 - Retrieve multiple Blocks with a single API call
+
+> getBlocks(array $block_ids, $original_media = false, $params = [], $filters = [], $order_asc = 1, $cache_seconds = 0)
+
+| Specification | Data Type | Description |
+|---|---|---|
+| block_ids | Array | Array with the IDs (integer) of the requested Blocks |
+| original_media | Boolean | Indicate if you want the original media or the converted ones |
+| params | Array | Array with the parameters you want to pass to the MBurger params variable. Check our API Reference for more informations |
+| filters | Array | Array with the filters you want to pass to the MBurger filters variable. Check our API Reference for more informations |
+| order_asc | Boolean | Express if you want the data in ascendent or descendent order |
+| cache_seconds | Integer | Number of seconds you want to keep the API response stored in your local cache |
+
+### 3.2 - Retrieve a single Block
+
+> getBlock($block_id, $original_media = 0, $params = [], $filters = [], $order_asc = 1, $cache_seconds = 0)
+
+| Specification | Data Type | Description |
+|---|---|---|
+| block_id | Integer | ID of the requested Block |
+| original_media | Boolean | Indicate if you want the original media or the converted ones |
+| params | Array | Array with the parameters you want to pass to the MBurger params variable. Check our API Reference for more informations |
+| filters | Array | Array with the filters you want to pass to the MBurger filters variable. Check our API Reference for more informations |
+| order_asc | Boolean | Declare if you want the data in ascendent or descendent order |
+| cache_seconds | Integer | Number of seconds you want to keep the API response stored in your local cache |
+
+### 3.2 - Retrieve a single Section
+
+> getSection($secton_id, $original_media = 0, $params = [], $filters = [], $order_asc = 1, $cache_seconds = 0, $use_slug = 0)
+
+| Specification | Data Type | Description |
+|---|---|---|
+| section_id | Integer | ID of the requested Section |
+| original_media | Boolean | Indicate if you want the original media or the converted ones |
+| params | Array | Array with the parameters you want to pass to the MBurger params variable. Check our API Reference for more informations |
+| filters | Array | Array with the filters you want to pass to the MBurger filters variable. Check our API Reference for more informations |
+| order_asc | Boolean | Express if you want the data in ascendent or descendent order |
+| cache_seconds | Integer | Number of seconds you want to keep the API response stored in your local cache |
+| use_slug | Boolean | Declare if you want to use the section slug instead of the ID to retrieve data |
 
 ## 4.0 - Support & Feedback
 

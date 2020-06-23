@@ -58,15 +58,12 @@ In the current version of our PHP SDK you can find only a few methods that you c
 
 ### 3.2 - Retrieve a single Section
 
-> getSection($secton_id, $original_media = 0, $params = [], $filters = [], $order_asc = 1, $cache_seconds = 0, $use_slug = 0)
+> getSection($secton_id, $original_media = 0, $params = [], $order_asc = 1, $cache_seconds = 0, $use_slug = 0)
 
 | Specification | Data Type | Description |
 |---|---|---|
 | section_id | Integer | ID of the requested Section |
 | original_media | Boolean | Indicate if you want the original media or the converted ones |
-| params | Array | Array with the parameters you want to pass to the MBurger params variable. Check our API Reference for more informations |
-| filters | Array | Array with the filters you want to pass to the MBurger filters variable. Check our API Reference for more informations |
-| order_asc | Boolean | Express if you want the data in ascendent or descendent order |
 | cache_seconds | Integer | Number of seconds you want to keep the API response stored in your local cache |
 | use_slug | Boolean | Declare if you want to use the section slug instead of the ID to retrieve data |
 

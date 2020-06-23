@@ -125,7 +125,7 @@ class MBurger
 
     }
 
-    public static function getSection($secton_id, $original_media = 0, $params = [], $filters = [], $order_asc = 1, $cache_seconds = 0, $use_slug = 0)
+    public static function getSection($secton_id, $original_media = 0, $cache_seconds = 0, $use_slug = 0)
     {
         $url = 'https://mburger.cloud/api/sections/' . $secton_id . '/elements';
 

@@ -26,6 +26,14 @@ class MBurger
         curl_setopt($ch, CURLOPT_HTTPHEADER, Self::headers() ?? []);
 
         $curl_result = curl_exec($ch);
+        
+        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        
+        if ($status != 200) {
+            info('-- MBurger API Call ---');
+            info($status);
+            info($curl_result);
+        }
 
         $response = json_decode($curl_result, true);
 
@@ -72,7 +80,7 @@ class MBurger
                         })];
                 });
             } else {
-                throw new \Exception('MBurger Exception: ' . $response['message']);
+                throw new \Exception('MBurger Exception: ' . json_encode($response));
             }
         });
     }
@@ -119,7 +127,7 @@ class MBurger
                     })];
                 });
             } else {
-                throw new \Exception('MBurger Exception: ' . $response['message']);
+                throw new \Exception('MBurger Exception: ' . json_encode($response));
             }
         });
 
@@ -145,7 +153,7 @@ class MBurger
                     return [$element['name'] => $element['value']];
                 });
             } else {
-                throw new \Exception('MBurger Exception: ' . $response['message']);
+                throw new \Exception('MBurger Exception: ' . json_encode($response));
             }
         });
     }

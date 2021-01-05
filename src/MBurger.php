@@ -75,7 +75,9 @@ class MBurger
 
     public function includeElements(): self
     {
-        if (in_array('sections')) {
+        if (in_array('blocks.sections')) {
+            $this->include = array_merge(array_diff($this->include, ['blocks.sections']), 'blocks.sections.elements');
+        } elseif (in_array('sections')) {
             $this->include = array_merge(array_diff($this->include, ['sections']), 'sections.elements');
         } else {
             $this->include[] = 'elements';

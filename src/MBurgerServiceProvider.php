@@ -26,7 +26,5 @@ class MBurgerServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/config/mburger.php' => config_path('mburger.php'),
         ]);
-
-        include __DIR__ . '/routes.php';
     }
 }

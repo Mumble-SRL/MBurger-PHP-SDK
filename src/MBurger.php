@@ -4,6 +4,13 @@ namespace Mumble\MBurger;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use Mumble\MBurger\Exceptions\MBurgerValidationException;
+use Mumble\MBurger\Exceptions\MBurgeInvalidRequestException;
+use Mumble\MBurger\Exceptions\MBurgerNotFoundException;
+use Mumble\MBurger\Exceptions\MBurgerServerErrorException;
+use Mumble\MBurger\Exceptions\MBurgerThrottlingException;
+use Mumble\MBurger\Exceptions\MBurgerUnauthenticatedException;
+use Mumble\MBurger\Exceptions\MBurgerUnauthorizedException;
 
 class MBurger
 {
@@ -64,8 +71,8 @@ class MBurger
 
     public function includeSections(): self
     {
-        if (in_array('blocks')) {
-            $this->include = array_merge(array_diff($this->include, ['blocks']), 'blocks.sections');
+        if (in_array('blocks', $this->include)) {
+            $this->include = array_merge(array_diff($this->include, ['blocks']), ['blocks.sections']);
         } else {
             $this->include[] = 'sections';
         }
@@ -75,10 +82,10 @@ class MBurger
 
     public function includeElements(): self
     {
-        if (in_array('blocks.sections')) {
-            $this->include = array_merge(array_diff($this->include, ['blocks.sections']), 'blocks.sections.elements');
-        } elseif (in_array('sections')) {
-            $this->include = array_merge(array_diff($this->include, ['sections']), 'sections.elements');
+        if (in_array('blocks.sections', $this->include)) {
+            $this->include = array_merge(array_diff($this->include, ['blocks.sections']), ['blocks.sections.elements']);
+        } elseif (in_array('sections', $this->include)) {
+            $this->include = array_merge(array_diff($this->include, ['sections']), ['sections.elements']);
         } else {
             $this->include[] = 'elements';
         }
@@ -88,7 +95,12 @@ class MBurger
 
     public function includeStructure(): self
     {
-        $this->include[] = 'structure';
+        if (in_array('blocks', $this->include)) {
+            $this->include = array_merge(array_diff($this->include, ['blocks']), ['blocks.structure']);
+        } else {
+            $this->include[] = 'structure';
+        }
+
         return $this;
     }
 
@@ -130,6 +142,12 @@ class MBurger
         return $this;
     }
 
+    public function filterByTitle(string $title): self
+    {
+        $this->filters['title'] = $title;
+        return $this;
+    }
+
     public function filterByGeofence(float $latNE, float $latSW, float $lngNE, float $lngSW): self
     {
         $this->filters['geofence'] = implode(',', [$latNE, $latSW, $lngNE, $lngSW]);
@@ -168,6 +186,10 @@ class MBurger
 
     public function distance(float $latitude, float $longitude): self
     {
+        if (! in_array('elements', $this->include)) {
+            $this->include[] = 'elements';
+        }
+
         $this->coordinates = [$latitude, $longitude];
         return $this;
     }
@@ -181,15 +203,15 @@ class MBurger
     {
         $query = [
             'locale' => $this->locale,
-            'original_media' => $this->original_media,
+            'original_media' => $this->media_type == 'original',
             'force_locale_fallback' => $this->force_locale_fallback,
         ];
 
-        if (! empty($this->includes)) {
+        if (! empty($this->include)) {
             $query['include'] = implode(',', $this->include);
         }
 
-        $url = '/project&'.http_build_query($query);
+        $url = '/project?'.http_build_query($query);
 
         return Cache::remember('mburger:project:'.$url, $this->cache_ttl, function () use ($url) {
             return $this->call($url);
@@ -205,12 +227,14 @@ class MBurger
     {
         $query = [
             'locale' => $this->locale,
-            'original_media' => $this->original_media,
+            'skip' => $this->skip,
+            'take' => $this->take,
+            'original_media' => $this->media_type == 'original',
             'force_locale_fallback' => $this->force_locale_fallback,
             'sort' => $this->sort,
         ];
 
-        if (! empty($this->includes)) {
+        if (! empty($this->include)) {
             $query['include'] = implode(',', $this->include);
         }
 
@@ -220,7 +244,7 @@ class MBurger
             }
         }
 
-        $url = '/blocks&'.http_build_query($query);
+        $url = '/blocks?'.http_build_query($query);
 
         return Cache::remember('mburger:blocks:'.$url, $this->cache_ttl, function () use ($url) {
             return $this->call($url);
@@ -236,12 +260,12 @@ class MBurger
     {
         $query = [
             'locale' => $this->locale,
-            'original_media' => $this->original_media,
+            'original_media' => $this->media_type == 'original',
             'force_locale_fallback' => $this->force_locale_fallback,
             'sort' => $this->sort,
         ];
 
-        if (! empty($this->includes)) {
+        if (! empty($this->include)) {
             $query['include'] = implode(',', $this->include);
         }
 
@@ -251,7 +275,7 @@ class MBurger
             }
         }
 
-        $url = '/blocks/'.$block_id.'&'.http_build_query($query);
+        $url = '/blocks/'.$block_id.'?'.http_build_query($query);
 
         return Cache::remember('mburger:block:'.$block_id.':'.$url, $this->cache_ttl, function () use ($url) {
             return $this->call($url);
@@ -267,12 +291,14 @@ class MBurger
     {
         $query = [
             'locale' => $this->locale,
-            'original_media' => $this->original_media,
+            'skip' => $this->skip,
+            'take' => $this->take,
+            'original_media' => $this->media_type == 'original',
             'force_locale_fallback' => $this->force_locale_fallback,
             'sort' => $this->sort,
         ];
 
-        if (! empty($this->includes)) {
+        if (! empty($this->include)) {
             $query['include'] = implode(',', $this->include);
         }
 
@@ -286,7 +312,7 @@ class MBurger
             $query['distance'] = implode(',', $this->coordinates);
         }
 
-        $url = '/blocks/'.$block_id.'/sections&'.http_build_query($query);
+        $url = '/blocks/'.$block_id.'/sections?'.http_build_query($query);
 
         return Cache::remember('mburger:sections:'.$url, $this->cache_ttl, function () use ($url) {
             return $this->call($url);
@@ -302,13 +328,13 @@ class MBurger
     {
         $query = [
             'locale' => $this->locale,
-            'original_media' => $this->original_media,
+            'original_media' => $this->media_type == 'original',
             'force_locale_fallback' => $this->force_locale_fallback,
             'sort' => $this->sort,
-            'use_slug' => $this->use_slug,
+            'use_slug' => $this->force_slug,
         ];
 
-        if (! empty($this->includes)) {
+        if (! empty($this->include)) {
             $query['include'] = implode(',', $this->include);
         }
 
@@ -322,7 +348,7 @@ class MBurger
             $query['distance'] = implode(',', $this->coordinates);
         }
 
-        $url = '/sections/'.$section_id_or_slug.'&'.http_build_query($query);
+        $url = '/sections/'.$section_id_or_slug.'?'.http_build_query($query);
 
         return Cache::remember('mburger:section:'.$section_id_or_slug.':'.$url, $this->cache_ttl, function () use ($url) {
             return $this->call($url);
@@ -363,12 +389,20 @@ class MBurger
 
         if ($status < 300) {
             return $response;
-        } elseif ($status < 400) {
-            return $response;
+        } elseif ($status == 401) {
+            throw MBurgerUnauthenticatedException::create($response['message']);
+        } elseif ($status == 403) {
+            throw MBurgerUnauthorizedException::create($response['message']);
+        } elseif ($status == 404) {
+            throw MBurgerNotFoundException::create($response['message']);
+        } elseif ($status == 422) {
+            throw MBurgerValidationException::create($response['message']);
+        } elseif ($status == 429) {
+            throw MBurgerThrottlingException::create($response['message']);
         } elseif ($status < 500) {
-            return $response;
+            throw MBurgeInvalidRequestException::create($response['message']);
         } else {
-            return $response;
+            throw MBurgerServerErrorException::create($response['message']);
         }
     }
 

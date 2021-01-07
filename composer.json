@@ -28,11 +28,19 @@
             "Mumble\\MBurger\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Mumble\\MBurger\\Tests\\": "tests"
+        }
+    },
     "extra": {
         "laravel": {
             "providers": [
                 "Mumble\\MBurger\\MBurgerServiceProvider"
             ]
         }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.7"
     }
 }

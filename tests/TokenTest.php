@@ -2,9 +2,8 @@
 
 namespace Mumble\MBurger\Tests;
 
-use Illuminate\Support\Arr;
-use Mumble\MBurger\Exceptions\MBurgerUnauthenticatedException;
 use Mumble\MBurger\MBurger;
+use Mumble\MBurger\Exceptions\MBurgerUnauthenticatedException;
 
 class TokenTest extends TestCase
 {

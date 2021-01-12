@@ -4,7 +4,7 @@ namespace Mumble\MBurger\Exceptions;
 
 use Exception;
 
-class MBurgeInvalidRequestException extends Exception
+class MBurgerInvalidRequestException extends Exception
 {
     public static function create(string $message): self
     {

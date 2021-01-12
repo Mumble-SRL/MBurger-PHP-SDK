@@ -5,7 +5,7 @@ namespace Mumble\MBurger\Tests;
 use Mumble\MBurger\MBurger;
 use Mumble\MBurger\Exceptions\MBurgerUnauthorizedException;
 use Mumble\MBurger\Exceptions\MBurgerNotFoundException;
-use Mumble\MBurger\Exceptions\MBurgeInvalidRequestException;
+use Mumble\MBurger\Exceptions\MBurgerInvalidRequestException;
 use Illuminate\Support\Arr;
 
 class BlockTest extends TestCase
@@ -121,7 +121,7 @@ class BlockTest extends TestCase
     {
         try {
             (new MBurger())->filterByValue(['value'])->getBlocks();
-        } catch (MBurgeInvalidRequestException $e) {
+        } catch (MBurgerInvalidRequestException $e) {
             $this->assertEquals('Requested filter(s) `value` are not allowed. Allowed filter(s) are `id, title`.', $e->getMessage());
         }
     }

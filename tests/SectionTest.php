@@ -5,7 +5,7 @@ namespace Mumble\MBurger\Tests;
 use Mumble\MBurger\MBurger;
 use Mumble\MBurger\Exceptions\MBurgerUnauthorizedException;
 use Mumble\MBurger\Exceptions\MBurgerNotFoundException;
-use Mumble\MBurger\Exceptions\MBurgeInvalidRequestException;
+use Mumble\MBurger\Exceptions\MBurgerInvalidRequestException;
 use Mumble\MBurger\Exceptions\MBurgerValidationException;
 use Illuminate\Support\Arr;
 
@@ -92,7 +92,7 @@ class SectionTest extends TestCase
     {
         try {
             (new MBurger())->includeSections()->getSections(114);
-        } catch (MBurgeInvalidRequestException $e) {
+        } catch (MBurgerInvalidRequestException $e) {
             $this->assertEquals('Requested include(s) `sections` are not allowed. Allowed include(s) are `elements, elementsCount, beacons, beaconsCount`.', $e->getMessage());
         }
     }

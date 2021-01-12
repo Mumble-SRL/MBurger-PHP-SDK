@@ -5,7 +5,7 @@ namespace Mumble\MBurger;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Mumble\MBurger\Exceptions\MBurgerValidationException;
-use Mumble\MBurger\Exceptions\MBurgeInvalidRequestException;
+use Mumble\MBurger\Exceptions\MBurgerInvalidRequestException;
 use Mumble\MBurger\Exceptions\MBurgerNotFoundException;
 use Mumble\MBurger\Exceptions\MBurgerServerErrorException;
 use Mumble\MBurger\Exceptions\MBurgerThrottlingException;
@@ -400,7 +400,7 @@ class MBurger
         } elseif ($status == 429) {
             throw MBurgerThrottlingException::create($response['message']);
         } elseif ($status < 500) {
-            throw MBurgeInvalidRequestException::create($response['message']);
+            throw MBurgerInvalidRequestException::create($response['message']);
         } else {
             throw MBurgerServerErrorException::create($response['message']);
         }

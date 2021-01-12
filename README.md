@@ -2,23 +2,23 @@
 
 This package provide a simple interface from your Laravel Project to MBurger CMS, helping you retrieving data easily.
 
-## 1.0 - Installation
+## 1.0 Installation
 
 This package can be installed via Composer:
 
     composer require mumble/mburger
 
-## 2.0 - Configuration
+## 2.0 Configuration
 
 There are only a few steps separating you from using our PHP SDK.
 
-### 2.1 - Publish the ServiceProvider
+### 2.1 Publish the ServiceProvider
 
 First of all you need to publish the Service Provider with the MBurger configuration that you'll find under `config/mburger.php`
 
     php artisan vendor:publish --provider="Mumble\MBurger\MBurgerServiceProvider"
 
-### 2.2 - Project API Key
+### 2.2 Project API Key
 
 Place your API KEY in your `.env` file like that
 
@@ -26,50 +26,141 @@ Place your API KEY in your `.env` file like that
 
 If you don't have an API KEY yet, please generate one under your project settings page.
 
-## 3.0 - Methods reference 
+## 3.0 How to use
 
 In the current version of our PHP SDK you can find only a few methods that you can implement in your code but they're so powerful that enable you to do pretty anything with MBurger CMS.
 
-### 3.1 - Retrieve multiple Blocks with a single API call
+The SDK will return an array representing the response. By default methods that returns a list of objects are limited to 25 elements. See below for how to use pagination.
 
-> getBlocks(array $block_ids, $original_media = false, $params = [], $filters = [], $order_asc = 1, $cache_seconds = 0)
+This SDK offers a fluent syntax composed of these parts:
 
-| Specification | Data Type | Description |
-|---|---|---|
-| block_ids | Array | Array with the IDs (integer) of the requested Blocks |
-| original_media | Boolean | Indicate if you want the original media or the converted ones |
-| params | Array | Array with the parameters you want to pass to the MBurger params variable. Check our API Reference for more informations |
-| filters | Array | Array with the filters you want to pass to the MBurger filters variable. Check our API Reference for more informations |
-| order_asc | Boolean | Express if you want the data in ascendent or descendent order |
-| cache_seconds | Integer | Number of seconds you want to keep the API response stored in your local cache |
+1. Class instance
+2. Parameters or Modifiers
+3. Desired function
 
-### 3.2 - Retrieve a single Block
+Below are reported all parameters/modifiers and functions with some examples.
 
-> getBlock($block_id, $original_media = 0, $params = [], $filters = [], $order_asc = 1, $cache_seconds = 0)
+For a complete list of all available parameters we remand to the official API documentation https://docs.mburger.cloud/api-docs-1.
 
-| Specification | Data Type | Description |
-|---|---|---|
-| block_id | Integer | ID of the requested Block |
-| original_media | Boolean | Indicate if you want the original media or the converted ones |
-| params | Array | Array with the parameters you want to pass to the MBurger params variable. Check our API Reference for more informations |
-| filters | Array | Array with the filters you want to pass to the MBurger filters variable. Check our API Reference for more informations |
-| order_asc | Boolean | Declare if you want the data in ascendent or descendent order |
-| cache_seconds | Integer | Number of seconds you want to keep the API response stored in your local cache |
+### 3.1 Instantiate the SDK
 
-### 3.2 - Retrieve a single Section
+To instantiate the SDK simply use:
 
-> getSection($secton_id, $original_media = 0, $params = [], $order_asc = 1, $cache_seconds = 0, $use_slug = 0)
+    $sdk = new MBurger();
 
-| Specification | Data Type | Description |
-|---|---|---|
-| section_id | Integer | ID of the requested Section |
-| original_media | Boolean | Indicate if you want the original media or the converted ones |
-| cache_seconds | Integer | Number of seconds you want to keep the API response stored in your local cache |
-| use_slug | Boolean | Declare if you want to use the section slug instead of the ID to retrieve data |
+or use the compact version (useful for chaining):
 
-## 4.0 - Support & Feedback
+    $response = (new MBurger())->getProject();
+
+### 3.2 Functions
+
+To obtain a project
+
+    (new MBurger())->getProject();
+
+To obtain a list of blocks
+
+    (new MBurger())->getBlocks();
+
+To obtain a specific block by id
+
+    (new MBurger())->getBlock($block_id);
+
+To obtain a list of sections
+
+    (new MBurger())->getSections($block_id);
+
+To obtain a specific section by id or slug
+
+    (new MBurger())->getSection($block_id_or_slug);
+
+### 3.3 Modifiers
+
+Below a list of modifiers (or middle methods) useful to personalize the request.
+
+#### 3.3.1 Locale
+
+To request a specific locale use the `locale()` modifier. Example:
+
+    $response = (new MBurger())->locale($locale)->getProject();
+
+If the requested locale is not present an automatic fallback will be done. If you want to force the fallback if the requested locale is not present or is empty use the `forceLocaleFallback()` modifier:
+
+    $response = (new MBurger())->forceLocaleFallback()->getBlock();
+
+#### 3.3.2 Pagination
+
+To use pagination in functions that returns a list of elements use the modifiers `skip($skip)` and `take($take)`. Example:
+
+    $response = (new MBurger())->skip(5)->take(50)->getSections(100);
+
+Defaults are 0 and 25. The response will include a meta field containing the info for pagination, like total elements and actual index.  
+
+#### 3.3.3 Including
+
+To include relations on the response are available a set of convenience methods. This can be useful, for example, for obtaining in one request all the desired sections with the related elements.
+
+> NOTE: Not all methods are compatible with all functions. The SDK will throw an `MBurgeInvalidRequestException` exception. Check our API references for more info.
+
+> NOTE: loading a lot of relations in one request can have a negative impact on performances.
+
+- `include(array $include)`: generic method, you can pass an array of desired relations.
+- `includeBlocks()`: it will include blocks. Available only on `getProject()`.
+- `includeSections()`: it will include sections. Available only on `getBlocks()` and `getBlock()`.
+- `includeElements()`: it will include elements. Available only on `getSections()` and `getSection()`.
+- `includeStructure()`: it will include block structure. Available only on `getProject()`, `getBlocks()` and `getBlock()`.
+- `includeBeacons()`: it will include beacons. Available only on `getProject()`, `getSections()` and `getSection()`.
+- `includeContracts()`: it will include blocks. Available only on `getProject()`.
+
+Example: get first 15 sections of block 100 with the related elements
+
+    $response = (new MBurger())->take(15)->includeElements()->getSections(100);
+
+#### 3.3.4 Sorting
+
+To apply specific orders is available this method `sortBy(string $value, string $direction = 'asc')`. the first argument specify on which value do the sorting, and the second the direction. Example:
+
+    $response = (new MBurger())->sortBy('created_at', 'desc')->take(15)->getSections(100);
+
+> NOTE: this method is only available on functions that returns a list of items.
+
+#### 3.3.4 Filtering
+
+To filter items are available a set of convenience methods.
+
+> NOTE: Not all methods are compatible with all functions. The SDK will throw an `MBurgeInvalidRequestException` exception. Check our API references for more info.
+
+> NOTE: these methods are only available on functions that returns a list of items.
+
+- `filterByIds(array $ids)`: it filters based an array on id with an exact match. Available only on `getBlocks()` and `getSections()`.
+- `filterByRelation(int $block_id, int $section_id)`: it filters based on related sections. Available only on `getSections()`.
+- `filterByValue(array $values, string $element_name = null)`: it filters based on array of values. Specifying the second parameter `element_name` the filtering in done only on elements the match the name. Available only on `getSections()`.
+- `filterByTitle(string $title)`: it filters based on title. Available only on `getBlocks()`.
+- `filterByGeofence(float $latNE, float $latSW, float $lngNE, float $lngSW)`: it filters based on geofence rectangle. Available only on `getSections()`.
+
+#### 3.3.5 Distance
+
+If you have _sections_ with elements of type _address_ (which automatically contains coordinates) you can obtain your distance from the "_section_" (like a POI) with the method `istance(float $latitude, float $longitude)` by providing your coordinates. Example:
+
+    $response = (new MBurger())->distance(22.231232, 16.325322)->getSections(100);
+
+> NOTE: this method is only available on functions `getSections()`.
+
+#### 3.3.6 Errors
+
+MBurger SDK use an exception based error system, in case of error it will throw an exception with a descriptive message.
+
+### 3.4 Cache
+
+Every function contains a method `cache(int $cache_ttl = 0)` to automatically cache the response. The TTL is in seconds. Example:
+
+    $response = (new MBurger())->cache(300)->getSections(100);
+
+### 3.5 Examples
+
+## 4.0 Support & Feedback
 
 For support regarding MBurger, the SDK or any kind of feedback please feel free to contact us via  [support.mburger.cloud](http://support.mburger.cloud/)
 
-## 5.0 - License
+## 5.0 License
 The MIT License (MIT). Please see [License File](./LICENSE) for more information.

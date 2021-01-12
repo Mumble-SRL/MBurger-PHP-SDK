@@ -1,0 +1,14 @@
+/vendor
+/node_modules
+/public/media
+/public/storage
+/public/tmp
+Homestead.yaml
+Homestead.json
+.env
+.php_cs.cache
+.idea
+_ide_helper.php
+error_log
+*.m4v
+.phpunit.result.cache

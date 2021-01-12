@@ -166,6 +166,15 @@ Every function contains a method `cache(int $cache_ttl = 0)` to automatically ca
 
     $response = (new MBurger())->cache(300)->getSections(100);
 
+### 3.6 Transformers
+
+There are utility methods useful to transform the response in a more usable format.
+
+To transform blocks use `transformBlocks($blocks)`. Example:
+
+    $blocks = (new MBurger())->getBlocks();
+    $data = MBurger::transformBlocks($blocks);
+
 ## 4.0 Support & Feedback
 
 For support regarding MBurger, the SDK or any kind of feedback please feel free to contact us via  [support.mburger.cloud](http://support.mburger.cloud/)

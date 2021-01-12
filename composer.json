@@ -1,7 +1,7 @@
 {
     "name": "mumble/mburger",
     "type": "library",
-    "version": "0.4",
+    "version": "1.0",
     "description": "PHP SDK for simplifying your MBurger projects development",
     "keywords": [
         "mburger",

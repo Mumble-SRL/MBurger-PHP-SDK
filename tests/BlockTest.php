@@ -37,7 +37,7 @@ class BlockTest extends TestCase
         $this->assertIsArray($response);
         $this->assertEquals(0, $response['status_code']);
         $this->assertArrayHasKey('items', $response['body']);
-        $this->assertEquals([1569, 966, 117, 115, 114], Arr::pluck($response['body']['items'], 'id'));
+        $this->assertEquals([1576, 1569, 966, 117, 115, 114], Arr::pluck($response['body']['items'], 'id'));
     }
 
     public function test_it_can_get_blocks_with_sort_by_title()
@@ -47,7 +47,7 @@ class BlockTest extends TestCase
         $this->assertIsArray($response);
         $this->assertEquals(0, $response['status_code']);
         $this->assertArrayHasKey('items', $response['body']);
-        $this->assertEquals([1569, 117, 114, 966, 115], Arr::pluck($response['body']['items'], 'id'));
+        $this->assertEquals( [1569, 117, 114, 966, 115, 1576], Arr::pluck($response['body']['items'], 'id'));
     }
 
     public function test_it_can_get_blocks_with_structure()

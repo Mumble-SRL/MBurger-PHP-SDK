@@ -72,7 +72,7 @@ To obtain a list of sections
 
 To obtain a specific section by id or slug
 
-    $response = (new MBurger())->getSection($block_id_or_slug);
+    $response = (new MBurger())->getSection($section_id_or_slug);
 
 ### 3.3 Modifiers
 

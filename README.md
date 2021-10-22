@@ -20,11 +20,15 @@ First of all you need to publish the Service Provider with the MBurger configura
 
 ### 2.2 Project API Key
 
-Place your API KEY in your `.env` file like that
+Place your API Key in your `.env` file like that
 
     MBURGER_API_KEY=1234567890ABCDEFGHI
 
-If you don't have an API KEY yet, please generate one under your project settings page.
+Alternatively if you need multiple instances of the SDK you can pass the API Key directly in the constructor:
+
+    $sdk = new MBurger('YOUR_API_KEY');
+
+If you don't have an API Key yet, please generate one under your project settings page.
 
 ## 3.0 How to use
 

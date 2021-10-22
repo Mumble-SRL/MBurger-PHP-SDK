@@ -16,6 +16,10 @@ class MBurger
 {
     const URL = 'https://mburger.cloud/api';
 
+    protected $token = null;
+
+    protected $api_version = null;
+
     protected $locale = 'en';
 
     protected $include = [];
@@ -37,6 +41,12 @@ class MBurger
     protected $coordinates = [];
 
     protected $cache_ttl = 0;
+
+    public function __construct($token = null, $api_version = null)
+    {
+        $this->token = $token;
+        $this->api_version = $api_version;
+    }
 
     // Modifiers
     public function locale(string $locale): self
@@ -366,13 +376,16 @@ class MBurger
     {
         $ch = curl_init();
 
+        $this->token = $this->token ? : config('mburger.api_key');
+        $this->api_version = $this->api_version ? : config('mburger.api_version');
+
         curl_setopt($ch, CURLOPT_URL, self::URL.$path);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Accept: application/json',
-            'X-MBurger-Token:'.config('mburger.api_key'),
-            'X-MBurger-Version: '.config('mburger.api_version'),
+            'X-MBurger-Token: '.$this->token,
+            'X-MBurger-Version: '.$this->api_version,
         ]);
 
         $response = curl_exec($ch);

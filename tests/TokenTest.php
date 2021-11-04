@@ -28,4 +28,13 @@ class TokenTest extends TestCase
             $this->assertEquals('The project token is not valid.', $e->getMessage());
         }
     }
+
+    public function test_project_token_in_constructor()
+    {
+        $response = (new MBurger($this->app['config']->get('mburger.api_key')))->getProject();
+
+        $this->assertIsArray($response);
+        $this->assertEquals(0, $response['status_code']);
+        $this->assertEquals('Mumble', $response['body']['name']);
+    }
 }

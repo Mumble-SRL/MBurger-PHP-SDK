@@ -6,8 +6,8 @@ use Exception;
 
 class MBurgerNotFoundException extends Exception
 {
-    public static function create(string $message): self
+    public static function create(string $message, int $code): self
     {
-        return new static($message);
+        return new static($message, $code);
     }
 }

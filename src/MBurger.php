@@ -16,6 +16,8 @@ class MBurger
 {
     const URL = 'https://mburger.cloud/api';
 
+    protected $debug = false;
+
     protected $token = null;
 
     protected $api_version = null;
@@ -49,6 +51,12 @@ class MBurger
     }
 
     // Modifiers
+    public function debug(): self
+    {
+        $this->debug = true;
+        return $this;
+    }
+
     public function locale(string $locale): self
     {
         $this->locale = $locale;
@@ -396,26 +404,28 @@ class MBurger
 
         curl_close($ch);
 
-        Log::debug('--- MBurger API Call ---');
-        Log::debug($status);
-        Log::debug($response);
+        if ($this->debug) {
+            Log::debug('--- MBurger API Call ---');
+            Log::debug($status);
+            Log::debug($response);
+        }
 
         if ($status < 300) {
             return $response;
         } elseif ($status == 401) {
-            throw MBurgerUnauthenticatedException::create($response['message']);
+            throw MBurgerUnauthenticatedException::create($response['message'], $status);
         } elseif ($status == 403) {
-            throw MBurgerUnauthorizedException::create($response['message']);
+            throw MBurgerUnauthorizedException::create($response['message'], $status);
         } elseif ($status == 404) {
-            throw MBurgerNotFoundException::create($response['message']);
+            throw MBurgerNotFoundException::create($response['message'], $status);
         } elseif ($status == 422) {
-            throw MBurgerValidationException::create($response['message']);
+            throw MBurgerValidationException::create($response['message'], $status);
         } elseif ($status == 429) {
-            throw MBurgerThrottlingException::create($response['message']);
+            throw MBurgerThrottlingException::create($response['message'], $status);
         } elseif ($status < 500) {
-            throw MBurgerInvalidRequestException::create($response['message']);
+            throw MBurgerInvalidRequestException::create($response['message'], $status);
         } else {
-            throw MBurgerServerErrorException::create($response['message']);
+            throw MBurgerServerErrorException::create($response['message'], $status);
         }
     }
 
